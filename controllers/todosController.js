@@ -20,10 +20,12 @@ class TodosController {
     static async fetchTodo(req, res, next) {
         try {
             const todos = await Todo.findAll({
-                include: [{
-                    model: User,
-                    attributes: ['id', 'name', 'email']
-                }],
+                include: [
+                    {
+                        model: User,
+                        attributes: ['id', 'name', 'email']
+                    }
+                ],
                 attributes: {
                     exclude: ['createdAt', 'updatedAt']
                 },
