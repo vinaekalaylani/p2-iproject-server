@@ -37,6 +37,17 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
 
+    tag: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: true,
+        notEmpty: {
+          msg: `Tag can't be empty`
+        }
+      }
+    },
+
     status: {
       type: DataTypes.STRING,
       defaultValue: `todo`
