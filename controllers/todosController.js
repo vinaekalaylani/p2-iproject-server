@@ -63,6 +63,19 @@ class TodosController {
             next(error)
         }
     }
+
+    static async delete(req, res, next) {
+        const { id } = req.params
+        try {
+            const todo = await Todo.destroy({
+                where: { id }
+            })
+            
+            res.status(200).json({ message : `Todo success to delete`})
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = TodosController
