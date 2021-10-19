@@ -55,18 +55,7 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'The password must contain minimal 5 characters.'
         }
       }
-    },
-
-    role: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: true,
-        notEmpty: {
-          msg: `Role can't be empty`
-        }
-      }
-    },
+    }
   }, {
     hooks: {
       beforeCreate: (user) => {

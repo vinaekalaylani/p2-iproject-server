@@ -10,15 +10,13 @@ class UsersController {
                 { 
                     name, 
                     email, 
-                    password, 
-                    role: `Student`
+                    password
                 })
     
             res.status(201).json({
                 id: user.id,
                 name: user.name,
-                email: user.email,
-                role: user.role
+                email: user.email
             })
         } catch (error) {
             next(error)
