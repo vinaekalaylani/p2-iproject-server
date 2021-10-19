@@ -1,4 +1,5 @@
 const { Todo, User, Notes } = require('../models')
+const sendEmail = require('../helpers/nodemailer')
 
 class TodosController {
     static async addTodo (req, res, next) {
@@ -72,6 +73,25 @@ class TodosController {
             })
             
             res.status(200).json({ message : `Todo success to delete`})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    // NOTES
+    static async addNotes (req, res, next) {
+        try {
+            const { content, title } = req.body
+            const payload = req.user
+
+            const todos = await Todo.create(
+                {   
+                    title,
+                    content,
+                    UserId: req.user.id
+                })
+            sendEmail(payload, todos.content, `[ NOTES ] ${title}`)
+            res.status(201).json(todos)
         } catch (error) {
             next(error)
         }
