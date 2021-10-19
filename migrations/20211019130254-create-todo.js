@@ -14,6 +14,9 @@ module.exports = {
       content: {
         type: Sequelize.TEXT
       },
+      tag: {
+        type: Sequelize.STRING
+      },
       status: {
         type: Sequelize.STRING
       },

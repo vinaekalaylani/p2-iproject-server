@@ -12,8 +12,14 @@ function sendEmail (payload, content, subject) {
     const mailOptions = {
         from: 'todoinBlog@gmail.com',
         to: payload.email,
-        subject: `${subject} - ${payload.name}`,
-        text: content
+        subject: `${subject}`,
+        text: `
+        ${subject} - ${payload.name}
+        ________________________________
+
+        ${content}
+
+        `
     }
       
     transporter.sendMail(mailOptions, (err, info) => {

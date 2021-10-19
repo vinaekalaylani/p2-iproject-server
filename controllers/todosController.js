@@ -4,14 +4,17 @@ const sendEmail = require('../helpers/nodemailer')
 class TodosController {
     static async addTodo (req, res, next) {
         try {
-            const { title, content } = req.body
+            const { title, content, tag } = req.body
+            const payload = req.user // to get User Login
 
             const todos = await Todo.create(
                 { 
-                    title, 
+                    title,
+                    tag,
                     content,
                     UserId: req.user.id
                 })
+            sendEmail(payload, todos.content, `[ TODOIN - ${todos.tag} #${todos.id}] ${title}`)
             res.status(201).json(todos)
         } catch (error) {
             next(error)
@@ -44,10 +47,12 @@ class TodosController {
         try {
             const { status } = req.body
             const { id } = req.params
-
-            const todo = await Todo.findByPk(id)
+            const payload = req.user // to get User Login 
+            
+            const todo = await Todo.findByPk(id, { include: { model: User } })
 
             if (todo) {
+                // console.log(todo.User, `Status just updated by ${payload.name}`, `[ TODOIN - ${todo.tag} #${todo.id}] ${todo.title}`)
                 const newTodos = await Todo.update(
                     { 
                         status
@@ -56,6 +61,7 @@ class TodosController {
                         where: { id }
                     }
                 )
+                sendEmail(todo.User, `Status just updated to ${status} by ${todo.User.name}`, `[ TODOIN - ${todo.tag} #${todo.id}] ${todo.title}`)
                 res.status(200).json({ message: `Success edit status`})
             } else {
                 throw ({ name: `Todo Not Found`})
@@ -66,8 +72,13 @@ class TodosController {
     }
 
     static async delete(req, res, next) {
-        const { id } = req.params
         try {
+            const { id } = req.params
+            const payload = req.user // to get User Login
+
+            const todos = await Todo.findByPk(id, { include: { model: User } })
+            sendEmail(todos.User, `Success delete Todo #${todos.id} by ${payload.name}`, `[ TODOIN - ${todos.tag} #${todos.id}] ${todos.title}`)
+            
             const todo = await Todo.destroy({
                 where: { id }
             })
@@ -82,7 +93,7 @@ class TodosController {
     static async addNotes (req, res, next) {
         try {
             const { content, title } = req.body
-            const payload = req.user
+            const payload = req.user // to get User Login
 
             const todos = await Todo.create(
                 {   
@@ -90,7 +101,7 @@ class TodosController {
                     content,
                     UserId: req.user.id
                 })
-            sendEmail(payload, todos.content, `[ NOTES ] ${title}`)
+            sendEmail(payload, todos.content, `[ TODOIN - NOTES #${todos.id}] ${todos.title}`)
             res.status(201).json(todos)
         } catch (error) {
             next(error)
