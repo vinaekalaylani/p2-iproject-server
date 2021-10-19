@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       User.hasMany(models.Todo, { foreignKey: 'UserId' })
-      User.belongsToMany(models.Todo, { through: `Notes` , foreignKey: `UserId`})
+      User.hasMany(models.Note, { foreignKey: `UserId`})
     }
   };
   User.init({

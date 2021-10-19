@@ -35,6 +35,11 @@ const errorHandler = (error, req, res, next) => {
       messages = [ `401 Invalid signature` ]
     break;
 
+    case `Todo Not Found`:
+      status = 404
+      messages = [ `404 ${error.name}` ]
+    break;
+
     default:
       console.log(error)
       status
