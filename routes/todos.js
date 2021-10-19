@@ -6,5 +6,6 @@ const router = require(`express`).Router()
 router.use(authentication)
 router.get(`/`, TodosController.fetchTodo)
 router.post(`/add`, TodosController.addTodo)
+router.patch(`/status/:id`, TodosController.editStatus)
 
 module.exports = router

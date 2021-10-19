@@ -12,13 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Note.belongsTo(models.User, { foreignKey: `UserId` })
-      Note.belongsTo(models.Todo, { foreignKey: `TodoId` })
     }
   };
   Note.init({
     content: DataTypes.TEXT,
-    UserId: DataTypes.INTEGER,
-    TodoId: DataTypes.INTEGER
+    UserId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Note',
