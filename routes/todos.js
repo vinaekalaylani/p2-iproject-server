@@ -7,5 +7,6 @@ router.use(authentication)
 router.get(`/`, TodosController.fetchTodo)
 router.post(`/add`, TodosController.addTodo)
 router.patch(`/status/:id`, TodosController.editStatus)
+router.delete('/:id', TodosController.delete)
 
 module.exports = router
