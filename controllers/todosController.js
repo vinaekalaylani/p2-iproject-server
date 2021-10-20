@@ -92,6 +92,32 @@ class TodosController {
         }
     }
 
+    static async edit(req, res, next) {
+        try {
+            const { id } = req.params
+            const { title, content, tag } = req.body
+            const payload = req.user // to get User Login
+
+            const todos = await Todo.findByPk(id, { include: { model: User } })
+
+            if (!todos) {
+                throw ({ name: `Todo Not Found`})
+            }
+            
+            const todo = await Todo.update(
+                { title, content, tag, status: todos.status },
+                {
+                    where: { id },
+                    returning: true
+                }
+            )
+            sendEmail(todos.User, `Updated Todo by ${payload.name}`, `[ TODOIN - ${tag} #${id}] ${title}`)
+            res.status(200).json(todo[1])
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static async delete(req, res, next) {
         try {
             const { id } = req.params
