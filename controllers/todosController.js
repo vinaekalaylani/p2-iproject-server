@@ -43,6 +43,30 @@ class TodosController {
         }
     }
 
+    static async fetchTodoById(req, res, next) {
+        try {
+            const { id } = req.params
+            const todos = await Todo.findOne({
+                include: [
+                    {
+                        model: User,
+                        attributes: ['id', 'name', 'email']
+                    }
+                ],
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt']
+                },
+                order: [
+                    ['updatedAt', 'DESC']
+                ],
+                where: { id }
+            })
+            res.status(200).json(todos)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static async fetchNotes(req, res, next) {
         try {
             const notes = await Note.findAll({
