@@ -11,6 +11,7 @@ router.get(`/notes`, TodosController.fetchNotes)
 router.post(`/notes/add`, TodosController.addNotes)
 
 router.patch(`/status/:id`, TodosController.editStatus)
+router.get(`/:id`, TodosController.fetchTodoById)
 router.put(`/:id`, TodosController.edit)
 router.delete('/:id', TodosController.delete)
 
