@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
 
     status: {
       type: DataTypes.STRING,
-      defaultValue: `todo`
+      defaultValue: `To do`
     },
 
     UserId: {

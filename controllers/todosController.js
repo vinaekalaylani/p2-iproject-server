@@ -1,4 +1,4 @@
-const { Todo, User, Notes } = require('../models')
+const { Todo, User, Note } = require('../models')
 const sendEmail = require('../helpers/nodemailer')
 
 class TodosController {
@@ -43,6 +43,28 @@ class TodosController {
         }
     }
 
+    static async fetchNotes(req, res, next) {
+        try {
+            const notes = await Note.findAll({
+                include: [
+                    {
+                        model: User,
+                        attributes: ['id', 'name', 'email']
+                    }
+                ],
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt']
+                },
+                order: [
+                    ['updatedAt', 'DESC']
+                ]
+            })
+            res.status(200).json(notes)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     static async editStatus(req, res, next) {
         try {
             const { status } = req.body
@@ -52,7 +74,6 @@ class TodosController {
             const todo = await Todo.findByPk(id, { include: { model: User } })
 
             if (todo) {
-                // console.log(todo.User, `Status just updated by ${payload.name}`, `[ TODOIN - ${todo.tag} #${todo.id}] ${todo.title}`)
                 const newTodos = await Todo.update(
                     { 
                         status
@@ -61,7 +82,7 @@ class TodosController {
                         where: { id }
                     }
                 )
-                sendEmail(todo.User, `Status just updated to ${status} by ${todo.User.name}`, `[ TODOIN - ${todo.tag} #${todo.id}] ${todo.title}`)
+                sendEmail(todo.User, `Status just updated to ${status} by ${payload.name}`, `[ TODOIN - ${todo.tag} #${todo.id}] ${todo.title}`)
                 res.status(200).json({ message: `Success edit status`})
             } else {
                 throw ({ name: `Todo Not Found`})
@@ -92,16 +113,15 @@ class TodosController {
     // NOTES
     static async addNotes (req, res, next) {
         try {
-            const { content, title } = req.body
+            const { content } = req.body
             const payload = req.user // to get User Login
 
-            const todos = await Todo.create(
+            const todos = await Note.create(
                 {   
-                    title,
                     content,
                     UserId: req.user.id
                 })
-            sendEmail(payload, todos.content, `[ TODOIN - NOTES #${todos.id}] ${todos.title}`)
+            sendEmail(payload, todos.content, `[ TODOIN - NOTES #${todos.id}]`)
             res.status(201).json(todos)
         } catch (error) {
             next(error)
