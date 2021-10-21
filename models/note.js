@@ -15,7 +15,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Note.init({
-    content: DataTypes.TEXT,
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notNull: true,
+        notEmpty: {
+          msg: `Content can't be empty`
+        }
+      }
+    },
+    
     UserId: DataTypes.INTEGER
   }, {
     sequelize,
