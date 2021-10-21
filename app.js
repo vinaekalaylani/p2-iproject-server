@@ -1,8 +1,12 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const cors = require(`cors`)
 const express = require('express')
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 const router = require(`./routes`)
 
 app.use(cors())
@@ -15,16 +19,16 @@ const io = require('socket.io')(server)
 app.use(router)
 
 io.on('connection', socket => {
-  console.log('connection')
   socket.on('sendMessage', (data) => {
-    
-    console.log(data)
     socket.broadcast.emit('broadcastMessage', data)
+  })
+  socket.on('sendUser', (data) => {
+    socket.broadcast.emit('broadcastUser', data)
   })
 })
 
 server.listen(port, () => {
-    console.log(`This app is listening on port ${port} - Josep Immanuel`)
+  console.log(`Example app listening at http://localhost:${port}`)
 })
 
 // app.listen(port, () => {

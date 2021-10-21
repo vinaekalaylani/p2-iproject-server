@@ -1,5 +1,6 @@
 const { Todo, User, Note } = require('../models')
 const sendEmail = require('../helpers/nodemailer')
+const { Op } = require("sequelize");
 
 class TodosController {
     static async addTodo (req, res, next) {
@@ -23,30 +24,9 @@ class TodosController {
 
     static async fetchTodo(req, res, next) {
         try {
-            const todos = await Todo.findAll({
-                include: [
-                    {
-                        model: User,
-                        attributes: ['id', 'name', 'email']
-                    }
-                ],
-                attributes: {
-                    exclude: ['createdAt', 'updatedAt']
-                },
-                order: [
-                    ['updatedAt', 'DESC']
-                ]
-            })
-            res.status(200).json(todos)
-        } catch (error) {
-            next(error)
-        }
-    }
+            const { title, status } = req.query
 
-    static async fetchTodoById(req, res, next) {
-        try {
-            const { id } = req.params
-            const todos = await Todo.findOne({
+            let condition = {
                 include: [
                     {
                         model: User,
@@ -59,8 +39,13 @@ class TodosController {
                 order: [
                     ['updatedAt', 'DESC']
                 ],
-                where: { id }
-            })
+                where: {}
+            }
+
+            if (title) condition.where.title = {[Op.iLike]: `%${title}%`}
+            if (status) condition.where.status = status
+
+            const todos = await Todo.findAll(condition)
             res.status(200).json(todos)
         } catch (error) {
             next(error)
@@ -173,6 +158,17 @@ class TodosController {
                 })
             sendEmail(payload, todos.content, `[ TODOIN - NOTES #${todos.id}]`)
             res.status(201).json(todos)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    // USER
+    static async getUser (req, res, next) {
+        try {
+            const { id } = req.user
+            const user = await User.findByPk(id)
+            res.status(200).json(user)
         } catch (error) {
             next(error)
         }

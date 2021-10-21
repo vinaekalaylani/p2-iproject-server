@@ -3,7 +3,7 @@ const { comparePassword } = require(`../helpers/bcrypt`)
 const { createToken } =  require(`../helpers/jwt`)
 
 const { OAuth2Client } = require('google-auth-library')
-const client = new OAuth2Client('63726053264-i1j3vqfdp7d8si6lm222hvosjnf1pqno.apps.googleusercontent.com')
+const client = new OAuth2Client(process.env.CLIENT_ID)
 const generator = require(`generate-password`)
 
 class UsersController {
@@ -58,7 +58,7 @@ class UsersController {
             const { token } = req.body
             const ticket = await client.verifyIdToken({
                 idToken: token,
-                audience: '63726053264-i1j3vqfdp7d8si6lm222hvosjnf1pqno.apps.googleusercontent.com', 
+                audience: process.env.CLIENT_ID, 
             })
 
             const payload = ticket.getPayload()

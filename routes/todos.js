@@ -5,13 +5,13 @@ const router = require(`express`).Router()
 
 router.use(authentication)
 router.get(`/`, TodosController.fetchTodo)
-router.post(`/add`, TodosController.addTodo)
-
+router.get('/user', TodosController.getUser) 
 router.get(`/notes`, TodosController.fetchNotes)
+
+router.post(`/add`, TodosController.addTodo)
 router.post(`/notes/add`, TodosController.addNotes)
 
 router.patch(`/status/:id`, TodosController.editStatus)
-router.get(`/:id`, TodosController.fetchTodoById)
 router.put(`/:id`, TodosController.edit)
 router.delete('/:id', TodosController.delete)
 

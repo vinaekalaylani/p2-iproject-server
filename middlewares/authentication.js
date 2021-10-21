@@ -4,7 +4,7 @@ const { verifyToken } = require(`../helpers/jwt`)
 const authentication = async (req, res, next) => {
     try {
         const { access_token: token } = req.headers
-
+        console.log(req.headers)
         if (!token) {
             throw { name : `Unauthenticated`}
         }
