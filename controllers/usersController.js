@@ -2,6 +2,10 @@ const { User } = require(`../models`)
 const { comparePassword } = require(`../helpers/bcrypt`)
 const { createToken } =  require(`../helpers/jwt`)
 
+const { OAuth2Client } = require('google-auth-library')
+const client = new OAuth2Client('63726053264-i1j3vqfdp7d8si6lm222hvosjnf1pqno.apps.googleusercontent.com')
+const generator = require(`generate-password`)
+
 class UsersController {
     static async register(req, res, next) {
         try {
@@ -44,6 +48,46 @@ class UsersController {
             const accessToken = createToken(userLogin)
             res.status(200).json( { accessToken } )
 
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    static loginGoogle = async (req, res, next) => {
+        try {
+            const { token } = req.body
+            const ticket = await client.verifyIdToken({
+                idToken: token,
+                audience: '63726053264-i1j3vqfdp7d8si6lm222hvosjnf1pqno.apps.googleusercontent.com', 
+            })
+
+            const payload = ticket.getPayload()
+            const emailFromGoogle = payload.email
+            const name = payload.name
+            const password = generator.generate({
+                length: 10,
+                numbers: true
+            })
+            
+            const [ user, isCreated ] = await User.findOrCreate({
+                where: {
+                    email: emailFromGoogle
+                },
+                defaults: {
+                    name,
+                    password
+                }
+            })
+            
+            console.log(user)
+            const userLogin = {
+                id: user.id,
+                name: user.name,
+                email: user.email
+            }
+
+            const accessToken = createToken(userLogin)
+            res.status(200).json({ access_token: accessToken })
         } catch (error) {
             next(error)
         }
