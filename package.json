@@ -4,6 +4,7 @@
   "description": "Individual Project - Server",
   "main": "index.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -29,7 +30,8 @@
     "nodemailer": "^6.7.0",
     "nodemon": "^2.0.13",
     "pg": "^8.7.1",
-    "sequelize": "^6.7.0"
+    "sequelize": "^6.7.0",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "sequelize-cli": "^6.2.0"
